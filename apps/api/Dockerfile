@@ -2,6 +2,8 @@ FROM node:22-slim AS base
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+ARG PORT=3000   
+ENV PORT=${PORT} 
 
 RUN corepack enable
 COPY . /app
@@ -42,8 +44,7 @@ COPY --from=rust-base /app/sharedLibs/html-transformer/target/release/libhtml_tr
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
 # Start the server by default, this can be overwritten at runtime
-EXPOSE 8080
-
+EXPOSE ${PORT}
 # Make sure the entrypoint script has the correct line endings
 RUN sed -i 's/\r$//' /app/docker-entrypoint.sh
 
